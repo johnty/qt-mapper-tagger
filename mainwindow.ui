@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>572</width>
-    <height>418</height>
+    <width>718</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>429</width>
+      <width>581</width>
       <height>293</height>
      </rect>
     </property>
@@ -40,7 +40,7 @@
    <widget class="QListWidget" name="listWidgetRevs">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>610</x>
       <y>30</y>
       <width>101</width>
       <height>261</height>
@@ -50,7 +50,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>610</x>
       <y>10</y>
       <width>54</width>
       <height>15</height>
@@ -81,7 +81,7 @@
      <rect>
       <x>100</x>
       <y>310</y>
-      <width>331</width>
+      <width>481</width>
       <height>25</height>
      </rect>
     </property>
@@ -95,7 +95,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>572</width>
+     <width>718</width>
      <height>23</height>
     </rect>
    </property>

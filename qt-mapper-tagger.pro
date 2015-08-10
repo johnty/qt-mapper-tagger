@@ -19,14 +19,16 @@ SOURCES += main.cpp\
     textviewtab.cpp \
     linkview.cpp \
     signallist.cpp \
-    gitinterface.cpp
+    gitinterface.cpp \
+    mapperjsonconfig.cpp
 
 HEADERS  += mainwindow.h \
     listviewtab.h \
     textviewtab.h \
     linkview.h \
     signallist.h \
-    gitinterface.h
+    gitinterface.h \
+    mapperjsonconfig.h
 
 FORMS    += mainwindow.ui \
     linkview.ui \

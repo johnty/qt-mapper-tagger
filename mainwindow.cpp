@@ -38,12 +38,21 @@ void MainWindow::on_pushButtonLoadProj_clicked()
         std::string repo_dir = repoRoot.toStdString();
         qDebug() << "opening existing repo at " << repoRoot;
 
-
         gitInterface = new gitinterface(repo_dir);
 
         if (gitInterface->isGitRepo())
         {
             qDebug() << "... Repo successfully opened!";
+
+            QString filepath = repoRoot;
+            QFile myfile(filepath+ "/mapping.json");
+            if (myfile.open(QFile::ReadOnly))
+            {
+                QString data;
+                QTextStream s1(&myfile);
+                data.append(s1.readAll());
+                mapperTextViewTab->setText(data);
+            }
 
 
 //            ui->pushButtonInit->setDisabled(true);

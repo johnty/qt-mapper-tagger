@@ -8,3 +8,8 @@ textviewtab::textviewtab(QTabWidget *parent)
     layout->addWidget(textBox);
 }
 
+void textviewtab::setText(QString text)
+{
+    textBox->setText(text);
+}
+
