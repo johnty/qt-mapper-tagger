@@ -34,3 +34,15 @@ listviewtab::listviewtab(QTabWidget *parent)
         listLayout->setStretch(2, 2);
 }
 
+
+void listviewtab::setMapperJSON(MapperJsonConfig *data)
+{
+    for (int i= 0; i< data->getSrcs()->size(); i++)
+    {
+        sources->addDevice(i,data->getSrcs()->at(i));
+    }
+    for (int i=0; i< data->getDests()->size(); i++)
+    {
+        destinations->addDevice(i,data->getDests()->at(i));
+    }
+}

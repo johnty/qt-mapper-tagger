@@ -11,11 +11,11 @@ MapperJsonConfig::MapperJsonConfig(const QString filePath, QIODevice::OpenModeFl
 
     if (!loadFile.open(mode))
     {
-        qWarning("cannot open file!");
+        qWarning("cannot open json file!");
     }
     else
     {
-        qDebug() << "file opened.";
+        qDebug() << "json file opened.";
     }
 
     QByteArray loadData = loadFile.readAll();
@@ -51,7 +51,7 @@ bool MapperJsonConfig::ParseFile(const QJsonObject& json_obj)
                     QString device = curr_src["device"].toString();
                     QString signal = curr_src["signal"].toString();
                     qDebug()<<"     id: "<<id<<" device: "<<device<<" sig: "<<signal;
-                    mySources.append(id);
+                    mySources.append(signal);
 
                 }
                 qDebug() << "***DESTINATIONS***";
@@ -63,7 +63,7 @@ bool MapperJsonConfig::ParseFile(const QJsonObject& json_obj)
                     QString device = curr_dst["device"].toString();
                     QString signal = curr_dst["signal"].toString();
                     qDebug()<<"     id: "<<id<<" device: "<<device<<" sig: "<<signal;
-                    myDestinations.append(id);
+                    myDestinations.append(signal);
                 }
                 qDebug() << "***CONNECTIONS***";
                 QJsonArray con_arr = val.toObject()["connections"].toArray();

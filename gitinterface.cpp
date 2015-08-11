@@ -62,6 +62,22 @@ void gitinterface::setComitterSig(char* sig_name, char* sig_addr)
     git_signature_now(&sig, sig_name, sig_addr);
 }
 
+void gitinterface::getTags()
+{
+    if (repo != NULL)
+    {
+        tagNames.clear();
+        git_strarray tags = {0};
+        int error = git_tag_list(&tags, repo);
+        qDebug() <<"found numTags =" <<tags.count;
+        if (error == 0) {
+            for (int i=0; i<tags.count; i++) {
+                tagNames.push_back(tags.strings[i]);
+            }
+        }
+    }
+}
+
 void gitinterface::getCommits()
 {
     if (repo != NULL)
@@ -79,6 +95,7 @@ void gitinterface::getCommits()
         qDebug() << "numParents = " << count;
 
         walkHistory(commit);
+        getTags();
     }
 }
 
@@ -98,6 +115,7 @@ void gitinterface::walkHistory(git_commit* commit)
     git_revwalk_push(walker, &commit_oid);
 
     commitList.clear();
+    commitTags.clear();
 
     while (git_revwalk_next(&commit_oid, walker) == 0)
     {
@@ -106,8 +124,45 @@ void gitinterface::walkHistory(git_commit* commit)
         commitList.push_back(wcommit);
         cmsg  = git_commit_message(wcommit);
         qDebug() << "Commit msg = " << cmsg << "cList size = " << commitList.size();
+
+        //think of something more meaningful to use for incremental labels...
+        git_time_t time =  git_commit_time(wcommit);
+        ostringstream oss;
+        oss << time;
+        string time_str = oss.str();
+        commitTags.push_back(time_str);
+
         //git_commit_free(wcommit);
     }
     git_revwalk_free(walker);
+}
+
+int gitinterface::checkout(git_commit* commit)
+{
+    git_checkout_options *opts;
+    opts->checkout_strategy = GIT_CHECKOUT_FORCE | GIT_CHECKOUT_DONT_UPDATE_INDEX;
+    git_tree *tree;
+    const git_oid *tree_id = git_commit_id(commit);
+
+    git_tree_lookup(&tree, repo, tree_id);
+
+    git_object* tree_obj;
+
+    git_object_lookup(&tree_obj, repo, tree_id, GIT_OBJ_TREE);
+
+
+    char shortsha[10] = {0};
+    git_oid_tostr(shortsha, 9, tree_id);
+
+    qDebug() << "checking out commit id " << shortsha;
+
+    int error = git_checkout_tree(repo, tree_obj, opts);
+
+    return error;
+}
+
+git_commit* gitinterface::getCommit(int idx)
+{
+    return commitList.at(idx);
 }
 

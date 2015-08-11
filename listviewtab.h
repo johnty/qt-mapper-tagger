@@ -8,6 +8,7 @@
 
 #include "signallist.h"
 #include "linkview.h"
+#include "mapperjsonconfig.h"
 
 class listviewtab: public QTabWidget
 {
@@ -17,6 +18,8 @@ public:
     void update();
     void deviceEvent();
     void linkEvent();
+
+    void setMapperJSON(MapperJsonConfig* data);
 
 private:
 
