@@ -19,12 +19,18 @@ public:
     void getCommits();
     void walkHistory(git_commit *commit);
 
+    //TODO: this should be refactored
     int checkout(git_commit* commit);
+
     git_commit* getCommit(int idx);
+
+    void checkoutTag(string tag);
 
     //todo: make this safer
     vector<string> * getCommitTags() { return &commitTags; }
     vector<string> * getTagNames() {return &tagNames; }
+
+    string getTagMessage(int index); //probably implement other methods of doing this too...
 
 
 private:
@@ -33,12 +39,15 @@ private:
     git_signature   *sig;  //git commiter signature
     git_commit      *head; //head commit
 
+    git_commit* getCommit(string tag_name);
+
     bool is_repo;
     int numRevs;
 
     vector<string> tagNames;
     vector<git_commit*> commitList;
     vector<string> commitTags;
+    vector<git_tag*> tagList;
 };
 
 #endif // GITINTERFACE_H

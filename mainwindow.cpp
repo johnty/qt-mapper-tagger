@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mappingViewTab->addTab(mapperTextViewTab, "text");
     ui->mappingViewTab->addTab(mapperListViewTab, "list");
 
+    ui->plainTextEditTagMsg->setReadOnly(true);
+
     //ui->listWidgetChanges->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->listWidgetRevs->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -172,6 +174,12 @@ void MainWindow::on_listWidgetRevs_currentRowChanged(int currentRow)
     {
         qDebug() << "loading new rev...";
         currTagSelection = currentRow;
+        gitInterface->checkoutTag(ui->listWidgetRevs->currentItem()->text().toStdString());
+        QString curr_file = repoRoot + "/mapping.json";
+        loadMappingFile(curr_file);
+        QString tag_msg = gitInterface->getTagMessage(currentRow).c_str();
+        ui->plainTextEditTagMsg->clear();
+        ui->plainTextEditTagMsg->insertPlainText(tag_msg);
     }
 }
 

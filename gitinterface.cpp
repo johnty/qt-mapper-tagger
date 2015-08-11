@@ -45,6 +45,11 @@ gitinterface::~gitinterface()
         git_commit_free(commitList.at(commitList.size()-1));
         commitList.pop_back();
     }
+    while (tagList.size() != 0)
+    {
+        git_tag_free(tagList.at(tagList.size()-1));
+        tagList.pop_back();
+    }
 
     git_libgit2_shutdown();
 }
@@ -67,12 +72,26 @@ void gitinterface::getTags()
     if (repo != NULL)
     {
         tagNames.clear();
+        tagList.clear();
         git_strarray tags = {0};
         int error = git_tag_list(&tags, repo);
         qDebug() <<"found numTags =" <<tags.count;
         if (error == 0) {
             for (int i=0; i<tags.count; i++) {
                 tagNames.push_back(tags.strings[i]);
+
+
+                string tag_name = "refs/tags/";
+                tag_name += tags.strings[i];
+                const char* tname = tag_name.c_str();
+                git_reference *ref;
+                if (git_reference_lookup(&ref, repo, tname) >= 0)
+                {
+                    git_tag* tag;
+                    git_reference_peel((git_object**)&tag, ref, GIT_OBJ_TAG);
+                    tagList.push_back(tag);
+                }
+
             }
         }
     }
@@ -137,6 +156,12 @@ void gitinterface::walkHistory(git_commit* commit)
     git_revwalk_free(walker);
 }
 
+void gitinterface::checkoutTag(string tag)
+{
+    git_commit* commit = getCommit(tag);
+    checkout(commit);
+}
+
 int gitinterface::checkout(git_commit* commit)
 {
     git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
@@ -161,3 +186,28 @@ git_commit* gitinterface::getCommit(int idx)
     return commitList.at(idx);
 }
 
+git_commit* gitinterface::getCommit(string tag_name)
+{
+    tag_name = "refs/tags/" + tag_name;
+    const char* tname = tag_name.c_str();
+    git_reference *ref;
+    if (git_reference_lookup(&ref, repo, tname) >= 0)
+    {
+        git_commit* commit;
+        git_reference_peel((git_object**)&commit, ref, GIT_OBJ_COMMIT);
+
+
+        char shortsha[10] = {0};
+        git_oid_tostr(shortsha, 9, git_commit_id(commit));
+
+        qDebug() << "got commit id" << shortsha <<" from tag " <<tag_name.c_str();
+        git_reference_free(ref);
+        return commit;
+    }
+}
+
+string gitinterface::getTagMessage(int idx)
+{
+    string tag_msg = git_tag_message(tagList.at(idx));
+    return tag_msg;
+}
