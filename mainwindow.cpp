@@ -141,7 +141,9 @@ void MainWindow::updateGitInfo()
     //put commit list into UI
     ui->listWidgetChanges->clear();
     vector<string>* ctags = gitInterface->getCommitTags();
-    for (int i=0; i<ctags->size(); i++)
+    //note: order is most recent FIRST
+    //
+    for (int i=ctags->size()-1; i>=0; i--)
     {
         QString tag_str = QString(ctags->at(i).c_str());
         ui->listWidgetChanges->addItem(tag_str);
@@ -151,6 +153,7 @@ void MainWindow::updateGitInfo()
 
     //put tag list into UI
 
+    //note: order is most recent LAST
     ui->listWidgetRevs->clear();
     ctags = gitInterface->getTagNames();
     for (int i=0; i<ctags->size();i++)
@@ -178,7 +181,9 @@ void MainWindow::on_listWidgetChanges_currentRowChanged(int currentRow)
     if (currentRow != currCommitSelection)
     {
         qDebug() << "loading new commit...";
-        gitInterface->checkout(gitInterface->getCommit(currentRow));
+        //because they're in reverse order...
+        int row = gitInterface->getCommitTags()->size()-1-currentRow;
+        gitInterface->checkout(gitInterface->getCommit(row));
         currCommitSelection = currentRow;
         QString curr_file = repoRoot + "/mapping.json";
         loadMappingFile(curr_file);
