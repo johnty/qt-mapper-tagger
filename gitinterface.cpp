@@ -41,7 +41,7 @@ gitinterface::~gitinterface()
 
     while (commitList.size() != 0)
     {
-        qDebug() << "freeing commit...";
+        //qDebug() << "freeing commit...";
         git_commit_free(commitList.at(commitList.size()-1));
         commitList.pop_back();
     }
@@ -139,24 +139,19 @@ void gitinterface::walkHistory(git_commit* commit)
 
 int gitinterface::checkout(git_commit* commit)
 {
-    git_checkout_options *opts;
-    opts->checkout_strategy = GIT_CHECKOUT_FORCE | GIT_CHECKOUT_DONT_UPDATE_INDEX;
-    git_tree *tree;
-    const git_oid *tree_id = git_commit_id(commit);
+    git_checkout_options opts = GIT_CHECKOUT_OPTIONS_INIT;
+    opts.checkout_strategy = GIT_CHECKOUT_FORCE | GIT_CHECKOUT_DONT_UPDATE_INDEX;
 
-    git_tree_lookup(&tree, repo, tree_id);
-
-    git_object* tree_obj;
-
-    git_object_lookup(&tree_obj, repo, tree_id, GIT_OBJ_TREE);
-
+    char *paths[] = { "mapping.json" }; //only check out mapping file
+    opts.paths.strings = paths;
+    opts.paths.count = 1;
 
     char shortsha[10] = {0};
-    git_oid_tostr(shortsha, 9, tree_id);
+    git_oid_tostr(shortsha, 9, git_commit_id(commit));
 
     qDebug() << "checking out commit id " << shortsha;
 
-    int error = git_checkout_tree(repo, tree_obj, opts);
+    int error = git_checkout_tree(repo, (git_object*)commit, &opts);
 
     return error;
 }

@@ -37,10 +37,12 @@ listviewtab::listviewtab(QTabWidget *parent)
 
 void listviewtab::setMapperJSON(MapperJsonConfig *data)
 {
+    sources->clear();
     for (int i= 0; i< data->getSrcs()->size(); i++)
     {
         sources->addDevice(i,data->getSrcs()->at(i));
     }
+    destinations->clear();
     for (int i=0; i< data->getDests()->size(); i++)
     {
         destinations->addDevice(i,data->getDests()->at(i));

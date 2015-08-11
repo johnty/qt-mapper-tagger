@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mappingViewTab->addTab(mapperTextViewTab, "text");
     ui->mappingViewTab->addTab(mapperListViewTab, "list");
 
-    ui->listWidgetChanges->setSelectionMode(QAbstractItemView::SingleSelection);
+    //ui->listWidgetChanges->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->listWidgetRevs->setSelectionMode(QAbstractItemView::SingleSelection);
 
     gitInterface = NULL;
@@ -25,6 +25,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    //we put things back, as if nothing ever happened...
+
+    QString dest = repoRoot + "/mapping.json";
+    QString backup = repoRoot + "/mapping_bk.json";
+
+    if (QFile::exists(dest))
+        QFile::remove(dest);
+    QFile::copy(backup, dest);
+
     delete ui;
     if (gitInterface != NULL)
         delete gitInterface;
@@ -57,7 +66,22 @@ void MainWindow::on_pushButtonLoadProj_clicked()
         {
             qDebug() << "... Repo successfully opened!";
 
-            loadMappingFile();
+            //working files:
+            //mapping == from repo
+            //mapping_curr == display
+            //mapping_bk == restore original on exit
+
+            QString curr_file = repoRoot + "/mapping.json";
+            QString disp_file = repoRoot + "/mapping_curr.json";
+            QString back_file = repoRoot + "/mapping_bk.json";
+            if (QFile::exists(disp_file))
+                QFile::remove(disp_file);
+            if (QFile::exists(back_file))
+                QFile::remove(back_file);
+            QFile::copy(curr_file, back_file);
+            QFile::copy(curr_file, disp_file);
+
+            loadMappingFile(disp_file);
             updateGitInfo();
 
 
@@ -91,9 +115,9 @@ void MainWindow::on_pushButtonLoadProj_clicked()
 
 }
 
-void MainWindow::loadMappingFile()
+void MainWindow::loadMappingFile(QString filepath)
 {
-    QString filepath = repoRoot + "/mapping.json";
+
     QFile myfile(filepath);
     if (myfile.open(QFile::ReadOnly))
     {
@@ -108,6 +132,7 @@ void MainWindow::loadMappingFile()
         mapperJSON = new MapperJsonConfig(filepath, QIODevice::ReadOnly);
         mapperListViewTab->setMapperJSON(mapperJSON);
     }
+    myfile.close();
 }
 
 void MainWindow::updateGitInfo()
@@ -155,5 +180,7 @@ void MainWindow::on_listWidgetChanges_currentRowChanged(int currentRow)
         qDebug() << "loading new commit...";
         gitInterface->checkout(gitInterface->getCommit(currentRow));
         currCommitSelection = currentRow;
+        QString curr_file = repoRoot + "/mapping.json";
+        loadMappingFile(curr_file);
     }
 }

@@ -39,7 +39,7 @@ private:
     int currCommitSelection;
 
     //file i/o
-    void loadMappingFile();
+    void loadMappingFile(QString filepath);
     void updateGitInfo();
 
     //git interface
