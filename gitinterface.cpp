@@ -142,7 +142,7 @@ void gitinterface::walkHistory(git_commit* commit)
 
         commitList.push_back(wcommit);
         cmsg  = git_commit_message(wcommit);
-        qDebug() << "Commit msg = " << cmsg << "cList size = " << commitList.size();
+        //qDebug() << "Commit msg = " << cmsg << "cList size = " << commitList.size();
 
         //think of something more meaningful to use for incremental labels...
         git_time_t time =  git_commit_time(wcommit);

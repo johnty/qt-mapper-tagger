@@ -7,22 +7,20 @@
 #include <QJsonArray>
 #include <QIODevice>
 #include <QDebug>
+#include "mapperdata.h"
 
-class MapperJsonConfig
+class MapperJsonConfig : public MapperData
 {
 public:
     MapperJsonConfig();
     MapperJsonConfig(const QString filePath, QIODevice::OpenModeFlag mode = QIODevice::ReadWrite);
 
-    const QList<QString>* getSrcs() { return &mySources; }
-    const QList<QString>* getDests() { return &myDestinations; }
+    const QList<MAPPER_SRC_DST>* getSrcs() { return &mySources; }
+    const QList<MAPPER_SRC_DST>* getDests() { return &myDestinations; }
     const QList<QString>* getConns() { return &myConnectionExprs; }
 
 private:
     bool ParseFile(const QJsonObject& json_doc);
-    QList<QString> mySources;
-    QList<QString> myDestinations;
-    QList<QString> myConnectionExprs;
     //TODO: data to hold other stuff...
 };
 

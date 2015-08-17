@@ -51,7 +51,11 @@ bool MapperJsonConfig::ParseFile(const QJsonObject& json_obj)
                     QString device = curr_src["device"].toString();
                     QString signal = curr_src["signal"].toString();
                     qDebug()<<"     id: "<<id<<" device: "<<device<<" sig: "<<signal;
-                    mySources.append(signal);
+                    MAPPER_SRC_DST mapper_src;
+                    mapper_src.id = id;
+                    mapper_src.dev = device;
+                    mapper_src.sig = signal;
+                    mySources.append(mapper_src);
 
                 }
                 qDebug() << "***DESTINATIONS***";
@@ -63,7 +67,11 @@ bool MapperJsonConfig::ParseFile(const QJsonObject& json_obj)
                     QString device = curr_dst["device"].toString();
                     QString signal = curr_dst["signal"].toString();
                     qDebug()<<"     id: "<<id<<" device: "<<device<<" sig: "<<signal;
-                    myDestinations.append(signal);
+                    MAPPER_SRC_DST mapper_dst;
+                    mapper_dst.id = id;
+                    mapper_dst.dev = device;
+                    mapper_dst.sig = signal;
+                    myDestinations.append(mapper_dst);
                 }
                 qDebug() << "***CONNECTIONS***";
                 QJsonArray con_arr = val.toObject()["connections"].toArray();
@@ -79,8 +87,11 @@ bool MapperJsonConfig::ParseFile(const QJsonObject& json_obj)
                     QString clipMax= curr_con["clipMax"].toString();
                     myConnectionExprs.append(expr);
                     qDebug()<<"     mute: "<<mute<<" mode: "<<mode<<" expr: "<<expr;
+                    //TODO:
                 }
             }
+            toDB();
+            fromDB();
 
 
         }

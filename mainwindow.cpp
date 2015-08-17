@@ -57,6 +57,7 @@ void MainWindow::on_pushButtonLoadProj_clicked()
 
         //!!! for testing...
         QString mypath = QDir::currentPath()+ "/project_root";
+        mypath = "/Users/johnty/Documents/libmapper-related/build-qt-mapper-tagger-Desktop_Qt_5_4_1_clang_64bit-Debug/project_root";
         ui->lineEditRepoDir->setText(mypath);
         repoRoot = ui->lineEditRepoDir->text();
         std::string repo_dir = repoRoot.toStdString();

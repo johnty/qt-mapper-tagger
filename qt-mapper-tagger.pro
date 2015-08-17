@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +13,8 @@ TEMPLATE = app
 
 LIBS += -L/usr/local/lib -lgit2
 
+INCLUDEPATH += /usr/local/include
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     listviewtab.cpp \
@@ -20,7 +22,8 @@ SOURCES += main.cpp\
     linkview.cpp \
     signallist.cpp \
     gitinterface.cpp \
-    mapperjsonconfig.cpp
+    mapperjsonconfig.cpp \
+    mapperdata.cpp
 
 HEADERS  += mainwindow.h \
     listviewtab.h \
@@ -28,7 +31,8 @@ HEADERS  += mainwindow.h \
     linkview.h \
     signallist.h \
     gitinterface.h \
-    mapperjsonconfig.h
+    mapperjsonconfig.h \
+    mapperdata.h
 
 FORMS    += mainwindow.ui \
     linkview.ui \

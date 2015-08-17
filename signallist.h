@@ -19,7 +19,7 @@ public:
     //int addDevice(int index, mapper_db_device dev);
     //void addSignal(int parentindex, mapper_db_signal sig);
 
-    //note: these are just simple representations without
+    //note/TODO: these are just simple representations without
     // underlying functionalities for now
     int addDevice(int index, QString name);
     int addSignal(int parentIndex, QString name);
